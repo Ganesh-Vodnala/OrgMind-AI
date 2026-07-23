@@ -5,13 +5,13 @@ from app.engines.capture.models.capture_result import CaptureResult
 
 class BaseCollector(ABC):
     """
-    Base contract for every knowledge collector.
+    Abstract base class for all knowledge collectors.
     """
 
     @abstractmethod
     def collect(self, *args, **kwargs) -> CaptureResult:
         """
-        Collect knowledge from a source and return
-        a standardized CaptureResult.
+        Collect knowledge from a specific source and return a
+        standardized CaptureResult.
         """
         pass
