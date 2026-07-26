@@ -5,12 +5,13 @@ from app.api.knowledge_source import router as knowledge_source_router
 from app.database.base import Base
 from app.database.database import engine
 from app.models.knowledge_source import KnowledgeSource
+from app.api.capture import router as capture_router
 app = FastAPI()
 
 Base.metadata.create_all(bind=engine)
 
 app.include_router(knowledge_source_router)
-
+app.include_router(capture_router)
 
 @app.get("/")
 def home():
