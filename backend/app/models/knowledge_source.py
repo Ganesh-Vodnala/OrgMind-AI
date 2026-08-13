@@ -2,6 +2,7 @@ from datetime import datetime
 
 from sqlalchemy import DateTime, Enum,Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import relationship
 
 from app.database.base import Base
 from app.enums.source_type import SourceType
@@ -34,4 +35,9 @@ class KnowledgeSource(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime,
         default=datetime.utcnow
+    )
+    chunks = relationship(
+        "TextChunk",
+        back_populates="knowledge_source",
+        cascade="all, delete-orphan"
     )

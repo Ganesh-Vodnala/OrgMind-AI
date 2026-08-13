@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 
 from app.database.database import get_db
 from app.schemas.capture.capture_request import CaptureDocumentRequest
+from app.schemas.knowledge_source import KnowledgeSourceResponse
 from app.services.capture.capture_service import CaptureService
 
 router = APIRouter(
@@ -17,7 +18,7 @@ UPLOAD_DIR = Path("uploads/temp")
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 
-@router.post("/document")
+@router.post("/document",  response_model=KnowledgeSourceResponse)
 def upload_document(
     file: UploadFile = File(...),
     db: Session = Depends(get_db)
