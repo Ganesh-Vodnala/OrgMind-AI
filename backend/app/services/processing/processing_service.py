@@ -18,7 +18,17 @@ from app.engines.processing.metadata_generators.implementations.basic_metadata_g
     BasicMetadataGenerator
 )
 
-from app.engines.processing.models.processed_document import ProcessedDocument
+from app.engines.processing.classifiers.implementations.basic_knowledge_classifier import (
+    BasicKnowledgeClassifier
+)
+
+from app.engines.processing.embedders.implementations.local_embedding_generator import (
+    LocalEmbeddingGenerator
+)
+
+from app.engines.processing.models.processed_document import (
+    ProcessedDocument
+)
 
 
 class ProcessingService:
@@ -32,7 +42,12 @@ class ProcessingService:
         self.entity_extractor = BasicEntityExtractor()
 
         self.relationship_extractor = BasicRelationshipExtractor()
+
         self.metadata_generator = BasicMetadataGenerator()
+
+        self.knowledge_classifier = BasicKnowledgeClassifier()
+
+        self.embedding_generator = LocalEmbeddingGenerator()
 
     def process(self, text: str) -> ProcessedDocument:
 
@@ -64,15 +79,40 @@ class ProcessingService:
             entities
         )
 
+        # Step 6: Generate metadata
         metadata = self.metadata_generator.generate(
-        cleaned_text,
-        entities,
-        relationships
+            cleaned_text,
+            entities,
+            relationships
         )
-        # Step 6: Return complete processed document
+
+        # Step 7: Classify knowledge
+        classification = self.knowledge_classifier.classify(
+            cleaned_text
+        )
+
+        # Step 8: Generate embeddings
+        chunk_texts = [
+            chunk.content
+            for chunk in chunks
+        ]
+
+        embeddings = self.embedding_generator.generate(
+            chunk_texts
+        )
+
+        # Step 9: Attach embeddings to chunks
+        for chunk, embedding in zip(
+            chunks,
+            embeddings
+        ):
+            chunk.embedding = embedding
+
+        # Step 10: Return complete processed document
         return ProcessedDocument(
             cleaned_text=cleaned_text,
             chunks=chunks,
             relationships=relationships,
-            metadata=metadata
+            metadata=metadata,
+            classification=classification
         )

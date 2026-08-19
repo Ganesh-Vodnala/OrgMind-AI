@@ -37,7 +37,12 @@ for chunk in processed_document.chunks:
             "|",
             entity.entity_type
         )
-
+    print(
+    "Embedding dimensions:",
+    len(chunk.embedding)
+    if chunk.embedding
+    else None
+    )
 
 print("\n========== RELATIONSHIPS ==========")
 
@@ -67,6 +72,20 @@ print("Author:", metadata.author)
 print("Project:", metadata.project)
 print("Module:", metadata.module)
 print("Confidence:", metadata.confidence)
+
+print("\n========== CLASSIFICATION ==========")
+
+classification = processed_document.classification
+
+print(
+    "Knowledge Type:",
+    classification.knowledge_type
+)
+
+print(
+    "Confidence:",
+    classification.confidence
+)
 print("\n========== ASSERTIONS ==========")
 
 relationship_types = [
@@ -93,6 +112,21 @@ assert processed_document.metadata.importance == "MEDIUM"
 assert "Rajesh" in processed_document.metadata.tags
 
 assert "Redis" in processed_document.metadata.tags
+
+assert classification is not None
+
+assert classification.knowledge_type == "TECHNICAL_KNOWLEDGE"
+
+assert classification.confidence == 0.70
+
+assert len(processed_document.chunks) > 0
+
+for chunk in processed_document.chunks:
+
+    assert chunk.embedding is not None
+
+    assert len(chunk.embedding) == 384
+
 print("\n==============================")
 print("COMPLETE PROCESSING PIPELINE TEST PASSED")
 print("==============================")

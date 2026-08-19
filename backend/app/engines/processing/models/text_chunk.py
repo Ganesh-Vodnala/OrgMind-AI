@@ -20,3 +20,4 @@ class TextChunk:
     entities: List[Entity] = field(
         default_factory=list
     )
+    embedding: List[float] | None = None
