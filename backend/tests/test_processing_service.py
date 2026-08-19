@@ -56,7 +56,17 @@ for relationship in processed_document.relationships:
         relationship.evidence
     )
 
+print("\n========== METADATA ==========")
 
+metadata = processed_document.metadata
+
+print("Knowledge Type:", metadata.knowledge_type)
+print("Importance:", metadata.importance)
+print("Tags:", metadata.tags)
+print("Author:", metadata.author)
+print("Project:", metadata.project)
+print("Module:", metadata.module)
+print("Confidence:", metadata.confidence)
 print("\n========== ASSERTIONS ==========")
 
 relationship_types = [
@@ -74,6 +84,15 @@ assert len(processed_document.relationships) == 2
 
 print("Relationship extraction verified.")
 
+assert processed_document.metadata is not None
+
+assert processed_document.metadata.knowledge_type == "TECHNICAL"
+
+assert processed_document.metadata.importance == "MEDIUM"
+
+assert "Rajesh" in processed_document.metadata.tags
+
+assert "Redis" in processed_document.metadata.tags
 print("\n==============================")
 print("COMPLETE PROCESSING PIPELINE TEST PASSED")
 print("==============================")

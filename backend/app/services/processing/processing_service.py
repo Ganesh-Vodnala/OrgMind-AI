@@ -14,6 +14,10 @@ from app.engines.processing.relationship_extractors.implementations.basic_relati
     BasicRelationshipExtractor
 )
 
+from app.engines.processing.metadata_generators.implementations.basic_metadata_generator import (
+    BasicMetadataGenerator
+)
+
 from app.engines.processing.models.processed_document import ProcessedDocument
 
 
@@ -28,6 +32,7 @@ class ProcessingService:
         self.entity_extractor = BasicEntityExtractor()
 
         self.relationship_extractor = BasicRelationshipExtractor()
+        self.metadata_generator = BasicMetadataGenerator()
 
     def process(self, text: str) -> ProcessedDocument:
 
@@ -59,9 +64,15 @@ class ProcessingService:
             entities
         )
 
+        metadata = self.metadata_generator.generate(
+        cleaned_text,
+        entities,
+        relationships
+        )
         # Step 6: Return complete processed document
         return ProcessedDocument(
             cleaned_text=cleaned_text,
             chunks=chunks,
-            relationships=relationships
+            relationships=relationships,
+            metadata=metadata
         )
