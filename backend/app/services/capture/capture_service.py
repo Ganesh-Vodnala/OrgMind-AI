@@ -6,6 +6,10 @@ from app.schemas.knowledge_source import KnowledgeSourceCreate
 from app.services.knowledge_source_service import KnowledgeSourceService
 from app.services.processing.processing_service import ProcessingService
 from app.services.text_chunk_service import TextChunkService
+from app.services.entity_persistence_service import EntityPersistenceService
+from app.services.relationship_persistence_service import (
+    RelationshipPersistenceService
+)
 
 class CaptureService:
 
@@ -15,6 +19,10 @@ class CaptureService:
         self.processing_service = ProcessingService()
         self.knowledge_source_service = KnowledgeSourceService()
         self.text_chunk_service = TextChunkService()
+        self.entity_persistence_service = EntityPersistenceService()
+        self.relationship_persistence_service = (
+            RelationshipPersistenceService()
+        )
 
     def capture_document(self, request: CaptureDocumentRequest):
         capture_result = self.document_collector.collect(request.file_path)
@@ -34,9 +42,18 @@ class CaptureService:
             self.db,
             knowledge_source_data
         )
-        self.text_chunk_service.create_chunks(
+        db_chunks=self.text_chunk_service.create_chunks(
             self.db,
             knowledge_source.id,
             processed_document.chunks
+        )
+        self.entity_persistence_service.persist_entities(
+        self.db,
+        processed_document.chunks,
+        db_chunks
+        )
+        self.relationship_persistence_service.persist_relationships(
+        self.db,
+        processed_document.relationships
         )
         return knowledge_source

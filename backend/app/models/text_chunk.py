@@ -43,3 +43,8 @@ class TextChunk(Base):
         "KnowledgeSource",
         back_populates="chunks"
     )
+    entity_mentions = relationship(
+    "EntityMention",
+    back_populates="text_chunk",
+    cascade="all, delete-orphan"
+    )
