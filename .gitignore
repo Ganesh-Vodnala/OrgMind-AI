@@ -1,0 +1,13 @@
+# Environment
+.env
+backend/.env
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Temporary uploads
+uploads/temp/
+backend/uploads/temp/
