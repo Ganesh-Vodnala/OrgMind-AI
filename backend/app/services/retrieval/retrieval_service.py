@@ -16,7 +16,8 @@ class RetrievalService:
     def retrieve(
         self,
         query: str,
-        limit: int = 5
+        limit: int = 5,
+        min_score: float=0.20
     ) -> List[Dict[str, Any]]:
 
         query_embedding = self.embedding_generator.generate(
@@ -29,8 +30,20 @@ class RetrievalService:
         )
 
         retrieved_chunks = []
+        seen_content = set()
 
         for result in results:
+            if result.score < min_score:
+                continue
+            content = result.payload["content"].strip()
+
+            # Prevent duplicate knowledge from different source copies
+            content_key = " ".join(content.split()).lower()
+
+            if content_key in seen_content:
+                continue
+
+            seen_content.add(content_key)
 
             retrieved_chunks.append(
                 {
@@ -39,7 +52,7 @@ class RetrievalService:
                         "knowledge_source_id"
                     ],
                     "chunk_index": result.payload["chunk_index"],
-                    "content": result.payload["content"],
+                    "content": content,
                     "score": result.score
                 }
             )
