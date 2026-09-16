@@ -101,5 +101,7 @@ class CaptureService:
             self.db,
             processed_document.relationships
         )
-
+        self.graph_persistence_service.persist_relationships(
+        processed_document.relationships
+        )
         return knowledge_source

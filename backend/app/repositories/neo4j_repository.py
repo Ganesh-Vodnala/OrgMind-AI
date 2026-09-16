@@ -54,6 +54,51 @@ class Neo4jRepository:
             )
 
             return result.single()
+    def upsert_relationship(
+        self,
+        source_name: str,
+        source_type: str,
+        target_name: str,
+        target_type: str,
+        relationship_type: str,
+        confidence: float | None = None,
+        evidence: str | None = None
+    ):
+
+        safe_relationship_type = relationship_type.upper()
+
+        with self.driver.session() as session:
+
+            query = f"""
+                MERGE (source:Entity {{
+                    name: $source_name,
+                    type: $source_type
+                }})
+
+                MERGE (target:Entity {{
+                    name: $target_name,
+                    type: $target_type
+                }})
+
+                MERGE (source)-[r:{safe_relationship_type}]->(target)
+
+                SET r.confidence = $confidence,
+                    r.evidence = $evidence
+
+                RETURN r
+            """
+
+            result = session.run(
+                query,
+                source_name=source_name,
+                source_type=source_type,
+                target_name=target_name,
+                target_type=target_type,
+                confidence=confidence,
+                evidence=evidence
+            )
+
+            return result.single()
     def close(self):
 
         self.driver.close()
