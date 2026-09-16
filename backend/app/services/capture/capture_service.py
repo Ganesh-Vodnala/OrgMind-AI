@@ -10,7 +10,11 @@ from app.services.entity_persistence_service import EntityPersistenceService
 from app.services.relationship_persistence_service import (
     RelationshipPersistenceService
 )
+from app.services.graph_persistence_service import (
+    GraphPersistenceService
+)
 from app.services.vector_store.qdrant_service import QdrantService
+
 
 
 class CaptureService:
@@ -25,7 +29,7 @@ class CaptureService:
         self.relationship_persistence_service = (
             RelationshipPersistenceService()
         )
-
+        self.graph_persistence_service = GraphPersistenceService()
         self.qdrant_service = QdrantService()
         self.qdrant_service.create_collection()
 
@@ -85,7 +89,14 @@ class CaptureService:
             processed_document.chunks,
             db_chunks
         )
+        entities = []
 
+        for chunk in processed_document.chunks:
+            entities.extend(chunk.entities)
+
+        self.graph_persistence_service.persist_entities(
+            entities
+        )
         self.relationship_persistence_service.persist_relationships(
             self.db,
             processed_document.relationships
