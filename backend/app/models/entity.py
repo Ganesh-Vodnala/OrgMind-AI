@@ -43,6 +43,11 @@ class Entity(Base):
         back_populates="entity",
         cascade="all, delete-orphan"
     )
+    aliases = relationship(
+        "EntityAlias",
+        back_populates="entity",
+        cascade="all, delete-orphan"
+    )
     outgoing_relationships = relationship(
     "Relationship",
     foreign_keys="Relationship.source_entity_id",
@@ -56,3 +61,4 @@ class Entity(Base):
     back_populates="target_entity",
     cascade="all, delete-orphan"
     )
+    

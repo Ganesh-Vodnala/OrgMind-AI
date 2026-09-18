@@ -4,6 +4,9 @@ from app.models.entity import Entity
 from app.models.entity_mention import EntityMention
 from app.models.text_chunk import TextChunk
 from app.repositories.entity_repository import EntityRepository
+from app.services.entity_resolution_service import (
+    EntityResolutionService
+)
 
 
 class EntityPersistenceService:
@@ -35,12 +38,17 @@ class EntityPersistenceService:
 
             for extracted_entity in processing_chunk.entities:
 
-                entity = EntityRepository.get_or_create(
+                entity = EntityResolutionService.resolve(
                     db=db,
                     name=extracted_entity.text,
                     entity_type=extracted_entity.entity_type
                 )
-
+                if entity is None:
+                    entity = EntityRepository.create(
+                    db=db,
+                    name=extracted_entity.text,
+                    entity_type=extracted_entity.entity_type
+                    )
                 mention = EntityMention(
                     entity_id=entity.id,
                     text_chunk_id=db_chunk.id,

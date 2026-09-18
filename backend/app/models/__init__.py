@@ -3,3 +3,18 @@ from app.models.text_chunk import TextChunk
 from app.models.entity import Entity
 from app.models.entity_mention import EntityMention
 from app.models.relationship import Relationship
+from app.models.entity_alias import EntityAlias
+
+
+
+
+
+
+
+
+
+
+
+
+
+

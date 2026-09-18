@@ -15,6 +15,7 @@ TECHNOLOGY_ENTITIES = {
     "FastAPI",
 
     "PostgreSQL",
+    "Postgres",
     "MySQL",
     "MongoDB",
     "Redis",

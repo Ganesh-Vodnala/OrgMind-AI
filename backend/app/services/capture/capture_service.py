@@ -84,24 +84,24 @@ class CaptureService:
             qdrant_chunks
         )
 
-        self.entity_persistence_service.persist_entities(
-            self.db,
-            processed_document.chunks,
-            db_chunks
+        resolved_entities = (
+            self.entity_persistence_service.persist_entities(
+                self.db,
+                processed_document.chunks,
+                db_chunks
+            )
         )
-        entities = []
-
-        for chunk in processed_document.chunks:
-            entities.extend(chunk.entities)
-
         self.graph_persistence_service.persist_entities(
-            entities
+            resolved_entities
         )
-        self.relationship_persistence_service.persist_relationships(
-            self.db,
-            processed_document.relationships
+        resolved_relationships = (
+            self.relationship_persistence_service.persist_relationships(
+                self.db,
+                processed_document.relationships
+            )
         )
+
         self.graph_persistence_service.persist_relationships(
-        processed_document.relationships
+            resolved_relationships
         )
         return knowledge_source

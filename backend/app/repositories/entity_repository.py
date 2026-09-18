@@ -1,13 +1,15 @@
 from sqlalchemy.orm import Session
 
 from app.models.entity import Entity
-
+from app.services.entity_normalization_service import (
+    EntityNormalizationService
+)
 
 class EntityRepository:
 
     @staticmethod
     def canonicalize(name: str) -> str:
-        return name.strip().lower()
+        return EntityNormalizationService.normalize(name)
 
     @staticmethod
     def find_by_canonical_name(

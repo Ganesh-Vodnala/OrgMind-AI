@@ -26,7 +26,8 @@ class RelationshipRepository:
         db.add(relationship)
         db.commit()
         db.refresh(relationship)
-
+        relationship.source_entity
+        relationship.target_entity
         return relationship
 
     @staticmethod
